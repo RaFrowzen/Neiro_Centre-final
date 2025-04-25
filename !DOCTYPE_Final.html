@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>НейроЦентр</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #2a2a2a;
+      --header-color: #383838;
+      --card-color: #3a3a3a;
+      --text-color: #ffffff;
+      --accent-color: #00ffcc;
+      --button-bg: #007bff;
+      --button-hover: #0056b3;
+      --sidebar-color: #333333;
+    }
+
+    .light-theme {
+      --bg-color: #f5f5f5;
+      --header-color: #e0e0e0;
+      --card-color: #ffffff;
+      --text-color: #000000;
+      --accent-color: #007bff;
+      --button-bg: #007bff;
+      --button-hover: #0056b3;
+      --sidebar-color: #e0e0e0;
+    }
+
+    .dark-theme {
+      --bg-color: #444444;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    header {
+      background-color: var(--header-color);
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .header-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+      color: var(--accent-color);
+    }
+
+    #searchInput, #categorySelect, #subcategorySelect {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      width: 100%;
+      margin-bottom: 10px;
+      background-color: var(--card-color);
+      color: var(--text-color);
+    }
+
+    .theme-toggle, .account-btn, .favorite-btn {
+      padding: 10px 15px;
+      background-color: var(--button-bg);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: background-color 0.3s;
+      margin: 5px;
+      flex: 1;
+      text-align: center;
+    }
+
+    .theme-toggle:hover, .account-btn:hover, .favorite-btn:hover {
+      background-color: var(--button-hover);
+    }
+
+    .filter-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: var(--card-color);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 20px rgba(0, 255, 204, 0.3);
+    }
+
+    .card-content {
+      padding: 20px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      color: var(--accent-color);
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .card p {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
+    .card .category-tag {
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: var(--bg-color);
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .card a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: var(--button-bg);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .card a:hover {
+      background-color: var(--button-hover);
+    }
+
+    .card-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .recommendations {
+      background-color: var(--card-color);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px;
+    }
+
+    .recommendations h2 {
+      color: var(--accent-color);
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .recommendation-list {
+      display: flex;
+      overflow-x: auto;
+      gap: 15px;
+      padding: 10px 0;
+    }
+
+    .recommendation-card {
+      min-width: 180px;
+      background-color: var(--header-color);
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .recommendation-card h4 {
+      margin: 0 0 5px 0;
+      color: var(--accent-color);
+      font-size: 16px;
+    }
+
+    .recommendation-card p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .recommendation-card small {
+      font-size: 12px;
+      color: var(--text-color);
+      opacity: 0.7;
+    }
+
+    .account-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .account-modal.open {
+      display: flex;
+    }
+
+    .account-content {
+      background-color: var(--sidebar-color);
+      border-radius: 15px;
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .account-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--accent-color);
+    }
+
+    .account-header h2 {
+      margin: 0;
+      color: var(--accent-color);
+      font-size: 22px;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .user-stats, .popular-networks {
+      margin-bottom: 20px;
+    }
+
+    .stat-item, .popular-item {
+      margin-bottom: 15px;
+      padding: 10px;
+      background-color: var(--card-color);
+      border-radius: 10px;
+    }
+
+    .stat-item h4, .popular-item h4 {
+      margin: 0 0 5px 0;
+      color: var(--accent-color);
+      font-size: 16px;
+    }
+
+    .stat-item p, .popular-item p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    @media (min-width: 768px) {
+      .header-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .header-top {
+        margin-bottom: 0;
+      }
+
+      .filter-container {
+        flex-direction: row;
+        align-items: center;
+        width: auto;
+      }
+
+      #searchInput, #categorySelect, #subcategorySelect {
+        width: 200px;
+        margin-bottom: 0;
+        margin-right: 10px;
+      }
+
+      .button-group {
+        margin-top: 0;
+      }
+
+      .container {
+        padding: 40px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-content">
+      <div class="header-top">
+        <h1>🧠 НейроЦентр</h1>
+        <div class="button-group">
+          <button class="theme-toggle" onclick="toggleTheme()">Тема</button>
+          <button class="account-btn" onclick="toggleAccountModal()">Кабинет</button>
+        </div>
+      </div>
+      
+      <div class="filter-container">
+        <input type="text" id="searchInput" placeholder="Поиск нейросетей...">
+        <select id="categorySelect">
+          <option value="">Все категории</option>
+          <option value="Text Generation">Текстовые</option>
+          <option value="Image Generation">Изображения</option>
+          <option value="Code Assistants">Для кода</option>
+          <option value="Audio/Video">Мультимедиа</option>
+        </select>
+        <select id="subcategorySelect" disabled>
+          <option value="">Все подкатегории</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="recommendations" id="recommendations">
+      <h2>Рекомендуемые нейросети</h2>
+      <div class="recommendation-list" id="recommendationList"></div>
+    </div>
+    
+    <div class="container" id="neuroGrid"></div>
+  </main>
+
+  <div class="account-modal" id="accountModal">
+    <div class="account-content">
+      <div class="account-header">
+        <h2>Личный кабинет</h2>
+        <button class="close-modal" onclick="toggleAccountModal()">×</button>
+      </div>
+      
+      <div class="user-stats">
+        <h3>Ваша статистика</h3>
+        <div class="stat-item">
+          <h4>Просмотрено нейросетей</h4>
+          <p id="viewedCount">0</p>
+        </div>
+        <div class="stat-item">
+          <h4>Избранные нейросети</h4>
+          <p id="favoritesCount">0</p>
+        </div>
+        <div class="stat-item">
+          <h4>Любимая категория</h4>
+          <p id="favoriteCategory">Не определено</p>
+        </div>
+      </div>
+      
+      <div class="popular-networks">
+        <h3>Популярные у других</h3>
+        <div id="popularNetworks"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const networks = [
+      // Существующие нейросети (20 штук)
+      { name: "ChatGPT", description: "ChatGPT — нейросеть от OpenAI для ведения диалогов, генерирования текста и помощи в различных задачах.", link: "https://chat.openai.com/", category: "Text Generation", subcategory: "Чат-боты", views: 1200, favorites: 800 },
+      { name: "Gemini", description: "Gemini от Google — мощный инструмент для генерации и анализа текста и изображений.", link: "https://gemini.google.com/", category: "Text Generation", subcategory: "Чат-боты", views: 950, favorites: 650 },
+      { name: "Copilot", description: "Copilot от Microsoft интегрируется с IDE и помогает разработчикам, предоставляя подсказки, автоматическое завершение кода.", link: "https://copilot.microsoft.com/", category: "Code Assistants", subcategory: "Автодополнение кода", views: 850, favorites: 700 },
+      { name: "DeepSeek", description: "DeepSeek — поисковая система с открытым API для интеграции и генерации новых идей.", link: "https://deepseek.com/", category: "Text Generation", subcategory: "Поисковые системы", views: 700, favorites: 450 },
+      { name: "Claude", description: "Claude от Anthropic — AI для безопасного общения и генерации ответов, минимизируя риски токсичности.", link: "https://claude.ai/", category: "Text Generation", subcategory: "Чат-боты", views: 800, favorites: 550 },
+      { name: "Midjourney", description: "Midjourney генерирует изображения по текстовым запросам, идеально подходит для дизайнеров и художников.", link: "https://www.midjourney.com/", category: "Image Generation", subcategory: "Генерация артов", views: 1100, favorites: 900 },
+      { name: "Leonardo AI", description: "Leonardo AI создает изображения в художественных стилях для художников и дизайнеров.", link: "https://leonardo.ai/", category: "Image Generation", subcategory: "Генерация артов", views: 900, favorites: 750 },
+      { name: "Suno", description: "Suno генерирует музыку по текстовым запросам, идеально подходит для создания музыкальных произведений.", link: "https://suno.com/", category: "Audio/Video", subcategory: "Генерация музыки", views: 750, favorites: 500 },
+      { name: "Runway", description: "Runway предоставляет инструменты для создания и редактирования видео, графики и визуальных эффектов.", link: "https://runwayml.com/", category: "Audio/Video", subcategory: "Редактирование видео", views: 800, favorites: 600 },
+      { name: "Pika", description: "Pika генерирует короткие видеоролики по тексту, подходит для маркетологов и видеоблогеров.", link: "https://pika.art/", category: "Audio/Video", subcategory: "Генерация видео", views: 850, favorites: 650 },
+      { name: "Heygen", description: "Heygen создает аватары и видео с синтезом речи и синхронизацией движений.", link: "https://www.heygen.com/", category: "Audio/Video", subcategory: "Аватары", views: 700, favorites: 550 },
+      { name: "Descript", description: "Descript для монтажа видео с распознаванием речи, улучшает рабочие процессы в видео-редактировании.", link: "https://www.descript.com/", category: "Audio/Video", subcategory: "Редактирование видео", views: 650, favorites: 450 },
+      { name: "Tome", description: "Tome помогает создавать презентации и сторителлинг с улучшениями в визуализации и дизайне.", link: "https://tome.app/", category: "Text Generation", subcategory: "Презентации", views: 600, favorites: 400 },
+      { name: "Gamma", description: "Gamma предоставляет инструменты для создания презентаций и визуализаций данных.", link: "https://gamma.app/", category: "Text Generation", subcategory: "Презентации", views: 550, favorites: 350 },
+      { name: "Notion AI", description: "Notion AI помогает организовать рабочие процессы, генерировать идеи и заметки.", link: "https://www.notion.so/product/ai", category: "Text Generation", subcategory: "Организация", views: 800, favorites: 600 },
+      { name: "Replika", description: "Replika — AI-собеседник для общения и тренировки навыков общения.", link: "https://replika.com/", category: "Text Generation", subcategory: "Чат-боты", views: 700, favorites: 500 },
+      { name: "You.com", description: "You.com — поисковик с AI для генерации контента и быстрого поиска информации.", link: "https://you.com/", category: "Text Generation", subcategory: "Поисковые системы", views: 650, favorites: 400 },
+      { name: "Perplexity", description: "Perplexity — поисковая система с AI, ориентированная на интеллектуальные подсказки.", link: "https://www.perplexity.ai/", category: "Text Generation", subcategory: "Поисковые системы", views: 600, favorites: 350 },
+      { name: "Magician for Figma", description: "Magician for Figma помогает дизайнерам и разработчикам автоматизировать задачи и ускорять рабочие процессы.", link: "https://www.figma.com/", category: "Code Assistants", subcategory: "Дизайн", views: 750, favorites: 550 },
+      { name: "Tabnine", description: "Tabnine помогает разработчикам с автоматическим дополнением кода и подсказками.", link: "https://www.tabnine.com/", category: "Code Assistants", subcategory: "Автодополнение кода", views: 700, favorites: 500 },
+      { name: "Codex", description: "Codex от OpenAI помогает создавать код с использованием естественного языка.", link: "https://beta.openai.com/", category: "Code Assistants", subcategory: "Генерация кода", views: 650, favorites: 450 },
+      { name: "GitHub Copilot", description: "GitHub Copilot предоставляет рекомендации по коду с использованием AI, упрощая разработку.", link: "https://copilot.github.com/", category: "Code Assistants", subcategory: "Автодополнение кода", views: 900, favorites: 750 },
+
+      // Новые нейросети (10 штук)
+      { name: "Stable Diffusion", description: "Stable Diffusion — мощная нейросеть для генерации изображений с открытым исходным кодом.", link: "https://stablediffusionweb.com/", category: "Image Generation", subcategory: "Генерация артов", views: 1000, favorites: 800 },
+      { name: "DALL-E", description: "DALL-E от OpenAI создает изображения по текстовым описаниям с высокой детализацией.", link: "https://openai.com/dall-e/", category: "Image Generation", subcategory: "Генерация артов", views: 950, favorites: 750 },
+      { name: "ElevenLabs", description: "ElevenLabs предоставляет реалистичный синтез речи с различными голосами и эмоциями.", link: "https://elevenlabs.io/", category: "Audio/Video", subcategory: "Синтез речи", views: 800, favorites: 600 },
+      { name: "Kaiber", description: "Kaiber — инструмент для создания анимированных видео и визуальных эффектов с помощью AI.", link: "https://kaiber.ai/", category: "Audio/Video", subcategory: "Генерация видео", views: 700, favorites: 500 },
+      { name: "Murf", description: "Murf преобразует текст в естественно звучащую речь с различными голосами и акцентами.", link: "https://murf.ai/", category: "Audio/Video", subcategory: "Синтез речи", views: 650, favorites: 450 },
+      { name: "Jasper", description: "Jasper — AI-ассистент для создания маркетинговых текстов, блогов и рекламных материалов.", link: "https://www.jasper.ai/", category: "Text Generation", subcategory: "Копирайтинг", views: 750, favorites: 550 },
+      { name: "Copy.ai", description: "Copy.ai помогает в создании контента для соцсетей, рекламы и email-рассылок.", link: "https://www.copy.ai/", category: "Text Generation", subcategory: "Копирайтинг", views: 700, favorites: 500 },
+      { name: "Blackbox", description: "Blackbox — AI-помощник для разработчиков с возможностью поиска и генерации кода.", link: "https://www.useblackbox.io/", category: "Code Assistants", subcategory: "Поиск кода", views: 600, favorites: 400 },
+      { name: "Phind", description: "Phind — интеллектуальный поисковик для разработчиков, отвечающий на технические вопросы.", link: "https://www.phind.com/", category: "Code Assistants", subcategory: "Поиск кода", views: 550, favorites: 350 },
+      { name: "Bardeen", description: "Bardeen автоматизирует рабочие процессы с помощью AI, интегрируясь с популярными сервисами.", link: "https://www.bardeen.ai/", category: "Text Generation", subcategory: "Автоматизация", views: 650, favorites: 450 }
+    ];
+
+    const grid = document.getElementById("neuroGrid");
+    const searchInput = document.getElementById("searchInput");
+    const categorySelect = document.getElementById("categorySelect");
+    const subcategorySelect = document.getElementById("subcategorySelect");
+    const accountModal = document.getElementById("accountModal");
+    const recommendationList = document.getElementById("recommendationList");
+    const popularNetworks = document.getElementById("popularNetworks");
+    
+    // Подкатегории для каждой категории
+    const subcategories = {
+      "Text Generation": ["Чат-боты", "Поисковые системы", "Презентации", "Организация", "Копирайтинг", "Автоматизация"],
+      "Image Generation": ["Генерация артов", "Фоторедакторы", "3D модели"],
+      "Code Assistants": ["Автодополнение кода", "Генерация кода", "Дизайн", "Поиск кода"],
+      "Audio/Video": ["Генерация музыки", "Генерация видео", "Редактирование видео", "Аватары", "Синтез речи"]
+    };
+
+    // Данные пользователя
+    const userData = {
+      viewedNetworks: [],
+      favoriteNetworks: [],
+      viewedCategories: {},
+      lastViewed: []
+    };
+
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCards(networks);
+      updateRecommendations();
+      updatePopularNetworks();
+      updateUserStats();
+    });
+
+    // Обновление подкатегорий при изменении категории
+    categorySelect.addEventListener('change', function() {
+      const selectedCategory = this.value;
+      subcategorySelect.innerHTML = '<option value="">Все подкатегории</option>';
+      
+      if (selectedCategory) {
+        subcategorySelect.disabled = false;
+        subcategories[selectedCategory].forEach(subcat => {
+          const option = document.createElement('option');
+          option.value = subcat;
+          option.textContent = subcat;
+          subcategorySelect.appendChild(option);
+        });
+      } else {
+        subcategorySelect.disabled = true;
+      }
+      
+      filterData();
+    });
+
+    subcategorySelect.addEventListener('change', filterData);
+
+    function renderCards(data) {
+      grid.innerHTML = "";
+      data.forEach(net => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="card-content">
+            <span class="category-tag">${net.subcategory}</span>
+            <h3>${net.name}</h3>
+            <p>${net.description}</p>
+            <div class="card-buttons">
+              <a href="${net.link}" target="_blank" onclick="trackNetworkView('${net.name}')">Перейти на сайт</a>
+              <button class="favorite-btn" onclick="toggleFavorite('${net.name}')">
+                ${userData.favoriteNetworks.includes(net.name) ? '❤️ В избранном' : '♡ В избранное'}
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterData() {
+      const query = searchInput.value.toLowerCase();
+      const selectedCategory = categorySelect.value;
+      const selectedSubcategory = subcategorySelect.value;
+      
+      const filtered = networks.filter(n => 
+        (n.name.toLowerCase().includes(query) || n.description.toLowerCase().includes(query)) &&
+        (selectedCategory === "" || n.category === selectedCategory) &&
+        (selectedSubcategory === "" || n.subcategory === selectedSubcategory)
+      );
+      
+      renderCards(filtered);
+    }
+
+    // Отслеживание просмотров нейросетей
+    function trackNetworkView(networkName) {
+      const network = networks.find(n => n.name === networkName);
+      if (!network) return;
+      
+      network.views = (network.views || 0) + 1;
+      
+      if (!userData.viewedNetworks.includes(networkName)) {
+        userData.viewedNetworks.push(networkName);
+      }
+      
+      userData.viewedCategories[network.category] = (userData.viewedCategories[network.category] || 0) + 1;
+      
+      userData.lastViewed = userData.lastViewed.filter(n => n !== networkName);
+      userData.lastViewed.unshift(networkName);
+      if (userData.lastViewed.length > 5) {
+        userData.lastViewed.pop();
+      }
+      
+      updateUserStats();
+      updateRecommendations();
+    }
+
+    // Добавление/удаление из избранного
+    function toggleFavorite(networkName) {
+      const index = userData.favoriteNetworks.indexOf(networkName);
+      const network = networks.find(n => n.name === networkName);
+      
+      if (index === -1) {
+        userData.favoriteNetworks.push(networkName);
+        network.favorites = (network.favorites || 0) + 1;
+      } else {
+        userData.favoriteNetworks.splice(index, 1);
+        network.favorites = Math.max(0, (network.favorites || 0) - 1);
+      }
+      
+      updateUserStats();
+      updatePopularNetworks();
+      filterData(); // Перерисовываем карточки для обновления состояния кнопок
+    }
+
+    // Обновление статистики пользователя
+    function updateUserStats() {
+      document.getElementById('viewedCount').textContent = userData.viewedNetworks.length;
+      document.getElementById('favoritesCount').textContent = userData.favoriteNetworks.length;
+      
+      let favoriteCategory = "Не определено";
+      let maxViews = 0;
+      
+      for (const category in userData.viewedCategories) {
+        if (userData.viewedCategories[category] > maxViews) {
+          maxViews = userData.viewedCategories[category];
+          favoriteCategory = category;
+        }
+      }
+      
+      document.getElementById('favoriteCategory').textContent = favoriteCategory;
+    }
+
+    // Обновление рекомендаций
+    function updateRecommendations() {
+      recommendationList.innerHTML = '';
+      
+      if (userData.lastViewed.length > 0) {
+        const lastViewedNetwork = networks.find(n => n.name === userData.lastViewed[0]);
+        const similarNetworks = networks
+          .filter(n => n.category === lastViewedNetwork.category && n.name !== lastViewedNetwork.name)
+          .sort((a, b) => b.views - a.views)
+          .slice(0, 5);
+        
+        similarNetworks.forEach(net => {
+          const card = document.createElement('div');
+          card.className = 'recommendation-card';
+          card.innerHTML = `
+            <h4>${net.name}</h4>
+            <p>${net.category}</p>
+            <small>Просмотров: ${net.views}</small>
+          `;
+          card.onclick = () => {
+            window.open(net.link, '_blank');
+            trackNetworkView(net.name);
+          };
+          recommendationList.appendChild(card);
+        });
+      } else {
+        const popular = [...networks]
+          .sort((a, b) => b.views - a.views)
+          .slice(0, 5);
+        
+        popular.forEach(net => {
+          const card = document.createElement('div');
+          card.className = 'recommendation-card';
+          card.innerHTML = `
+            <h4>${net.name}</h4>
+            <p>${net.category}</p>
+            <small>Просмотров: ${net.views}</small>
+          `;
+          card.onclick = () => {
+            window.open(net.link, '_blank');
+            trackNetworkView(net.name);
+          };
+          recommendationList.appendChild(card);
+        });
+      }
+    }
+
+    // Обновление списка популярных нейросетей
+    function updatePopularNetworks() {
+      popularNetworks.innerHTML = '';
+      
+      const popular = [...networks]
+        .sort((a, b) => b.favorites - a.favorites)
+        .slice(0, 5);
+      
+      popular.forEach(net => {
+        const item = document.createElement('div');
+        item.className = 'popular-item';
+        item.innerHTML = `
+          <h4>${net.name}</h4>
+          <p>${net.category} • ${net.favorites} ❤️</p>
+        `;
+        popularNetworks.appendChild(item);
+      });
+    }
+
+    // Открытие/закрытие модального окна личного кабинета
+    function toggleAccountModal() {
+      accountModal.classList.toggle('open');
+    }
+
+    searchInput.addEventListener("input", filterData);
+
+    function toggleTheme() {
+      document.body.classList.toggle("light-theme");
+      document.body.classList.toggle("dark-theme");
+    }
+  </script>
+</body>
+
+</html>
